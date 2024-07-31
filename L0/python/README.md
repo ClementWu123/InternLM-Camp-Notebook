@@ -1,7 +1,7 @@
 ## Part 1: Word Count输出
 
-![](wordcount1.png){: width="300px"}
-![](wordcount2.png){: width="300px"}
+<img src="wordcount1.png" alt="Resized Image 1" width="300"/>
+<img src="wordcount2.png" alt="Resized Image 2" width="300"/>
 
 ## Part 2: Debug笔记
 
