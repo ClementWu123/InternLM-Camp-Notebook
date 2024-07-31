@@ -19,4 +19,16 @@
 text = re.sub(r'[^\w\s]', '', text).lower()
 ```
 
+2. 检查单词列表：
+
+```python
+words = text.split()
+```
+
+3. 检查单词计数：
+
+```python
+word_count[word] += 1
+```
+
 
