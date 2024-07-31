@@ -2,7 +2,7 @@
 
 ![](ssh.png)
 
-## 2. 端口映射
+## 2. 端口映射：
 
 ![](projection.png)
 
