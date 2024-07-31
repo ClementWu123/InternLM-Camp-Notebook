@@ -31,4 +31,9 @@ words = text.split()
 word_count[word] += 1
 ```
 
+### 调试笔记和截图
+
+1. 初始代码，我们得到一个名为text的local变量
+
+
 
