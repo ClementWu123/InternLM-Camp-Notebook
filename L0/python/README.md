@@ -37,5 +37,15 @@ word_count[word] += 1
 
 <img src="初始.png" alt="Resized Image 2" width="500"/>
 
+2. 点击向前一步，程序根据正则表达式完成对text的转小写以及去标点符号操作。程序标识指定即将运行下一行。
+
+<img src="步骤一.png" alt="Resized Image 2" width="500"/>
+
+3. 继续运行，程序执行text分割。我们可以看到text根据空格被分割开，得到的数组被存储于words变量里。
+
+<img src="步骤二.png" alt="Resized Image 2" width="500"/>
+
+4. 继续运行，程序到达下一个断电，进入循环内部。我们可以看到，一个空字典word_count被初始化出来，
+
 
 
