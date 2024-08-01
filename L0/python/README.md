@@ -33,7 +33,9 @@ word_count[word] += 1
 
 ### 调试笔记和截图
 
-1. 初始代码，我们得到一个名为text的local变量
+1. 初始代码，我们得到一个名为text的local变量，以string格式存储。
+
+<img src="初始.png" alt="Resized Image 2" width="500"/>
 
 
 
