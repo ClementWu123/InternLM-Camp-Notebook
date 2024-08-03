@@ -12,7 +12,7 @@ LangGPT 是一个帮助你编写高质量提示词的工具，理论基础是一
 
 当我们提问“13.8比13.11小吗？”，模型返回结果为：
 
-<img src="初始.png" alt="Resized Image 1" width="700"/>
+<img src="初始.png" alt="Resized Image 1" width="800"/>
 
 我们发现，模型产生了违背常理的输出。13.8应该比13.11大才对，我们要朝着这个方向进行优化。
 
@@ -20,7 +20,7 @@ LangGPT 是一个帮助你编写高质量提示词的工具，理论基础是一
 
 我们生成了提示词：
 
-<img src="提示生成.png" alt="Resized Image 1" width="700"/>
+<img src="提示生成.png" alt="Resized Image 1" width="800"/>
 
 提示词如下：
 
@@ -51,6 +51,6 @@ LangGPT 是一个帮助你编写高质量提示词的工具，理论基础是一
 
 我们把提示词加入system prompt, 并重新提问， 得到的结果如下：
 
-<img src="提示后.png" alt="Resized Image 1" width="700"/>
+<img src="提示后.png" alt="Resized Image 1" width="800"/>
 
 我们发现，模型能够正确比较数字的大小了。
