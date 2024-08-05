@@ -58,3 +58,55 @@ print(rsp)
 
 <img src="无rag.png" alt="Resized Image 1" width="800"/>
 
+看起来模型在胡乱输出，效果非常不理想。
+
+### 2. 使用RAG知识库后解释网络用语的意思
+
+我从一个网站上提取出一些网络用语的相关解释，并转成json格式，以关键字为key，解释语为value。我把从文件加载进向量数据库：
+
+```python
+
+from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings
+
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+from llama_index.llms.huggingface import HuggingFaceLLM
+
+#初始化一个HuggingFaceEmbedding对象，用于将文本转换为向量表示
+embed_model = HuggingFaceEmbedding(
+#指定了一个预训练的sentence-transformer模型的路径
+    model_name="/root/model/sentence-transformer"
+)
+#将创建的嵌入模型赋值给全局设置的embed_model属性，
+#这样在后续的索引构建过程中就会使用这个模型。
+Settings.embed_model = embed_model
+
+llm = HuggingFaceLLM(
+    model_name="/root/model/internlm2-chat-1_8b",
+    tokenizer_name="/root/model/internlm2-chat-1_8b",
+    model_kwargs={"trust_remote_code":True},
+    tokenizer_kwargs={"trust_remote_code":True}
+)
+#设置全局的llm属性，这样在索引查询时会使用这个模型。
+Settings.llm = llm
+
+#从指定目录读取所有文档，并加载数据到内存中
+documents = SimpleDirectoryReader("/root/llamaindex_demo/data").load_data()
+#创建一个VectorStoreIndex，并使用之前加载的文档来构建索引。
+# 此索引将文档转换为向量，并存储这些向量以便于快速检索。
+index = VectorStoreIndex.from_documents(documents)
+# 创建一个查询引擎，这个引擎可以接收查询并返回相关文档的响应。
+query_engine = index.as_query_engine()
+response = query_engine.query("网络用语‘典’是什么？")
+
+print(response)
+```
+
+模型能够根据检索出来的内容提供正确回复。
+
+<img src="rag1.png" alt="Resized Image 1" width="800"/>
+
+我们试着提出一个新问题，网络用语中”绷“是什么意思？我们得到一下结果：
+
+<img src="rag2.png" alt="Resized Image 1" width="800"/>
+
+虽然输出有点混乱，但我们这次可以清楚的看到模型准确定位到了库里的知识。
