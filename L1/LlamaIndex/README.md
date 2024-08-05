@@ -50,7 +50,11 @@ llm = HuggingFaceLLM(
     tokenizer_kwargs={"trust_remote_code":True}
 )
 
-rsp = llm.chat(messages=[ChatMessage(content="网络用语典是什么？")])
+rsp = llm.chat(messages=[ChatMessage(content="网络用语‘典’是什么？")])
 print(rsp)
 ```
+
+我们得到以下结果：
+
+<img src="无rag.png" alt="Resized Image 1" width="800"/>
 
