@@ -1,4 +1,4 @@
-## Llama Index介绍
+### Llama Index介绍
 RAG是不改变模型的权重，只是给模型引入格外的信息。类比人类编程的过程，相当于你阅读函数文档然后短暂的记住了某个函数的用法。
 
 LlamaIndex 是一个上下文增强的 LLM 框架，旨在通过将其与特定上下文数据集集成，增强大型语言模型（LLMs）的能力。它允许您构建应用程序，既利用 LLMs 的优势，又融入您的私有或领域特定信息。具有以下优势：
@@ -16,3 +16,9 @@ LlamaIndex 是一个上下文增强的 LLM 框架，旨在通过将其与特定�
 
 5. 多语言支持：
 支持多种自然语言处理任务，如文本分类、信息检索、问答系统等。能够处理多种语言的数据，适用于全球化应用。
+
+### 环境配置
+
+```code
+pip install llama-index==0.10.38 llama-index-llms-huggingface==0.2.0 "transformers[torch]==4.41.1" "huggingface_hub[inference]==0.23.1" huggingface_hub==0.23.1 sentence-transformers==2.7.0 sentencepiece==0.2.0
+```
