@@ -330,11 +330,9 @@ print(json.dumps(converted_data, ensure_ascii=False, indent=4))
 
 
 
-基座模型推理
+### 基座模型推理
 
-
-
-我们得到以下结果，对于医疗诊断来说过于复杂，我们希望能有简洁的回答。
+我们得到以下结果，明明提问已经表示检查过了，回答仍然推荐去检查而不是具体的治疗方案，模型的理解能力有限。
 
 <img src="adv_initial.png" alt="Resized Image 1" width="800"/>
 
@@ -347,19 +345,36 @@ print(json.dumps(converted_data, ensure_ascii=False, indent=4))
 xtuner copy-cfg internlm2_1_8b_full_custom_pretrain_e1 .
 ```
 
-格式转换
+### 格式转换
 
 ```code
 pth_file=`ls -t ./work_dirs/internlm2_1_8b_full_custom_pretrain_e1_copy/*.pth | head -n 1` && MKL_SERVICE_FORCE_INTEL=1 MKL_THREADING_LAYER=GNU xtuner convert pth_to_hf ./internlm2_1_8b_full_custom_pretrain_e1_copy.py ${pth_file} ./hf
 ```
 
-模型合并
+### 模型合并
 
 ```code
 xtuner convert merge /root/InternLM/XTuner/Shanghai_AI_Laboratory/internlm2-chat-1_8b ./hf ./medicalChat --max-shard-size 2GB
 ```
 
-目标模型推理
+### 目标模型推理
+
+改变直接修改xtuner_streamlit_demo.py脚本文件第18行为/root/InternLM/XTuner/medicalChat，再次运行：
+
+```code
+streamlit run /root/InternLM/Tutorial/tools/xtuner_streamlit_demo.py
+```
+
+得到以下结果：
+
+<img src="adv1.png" alt="Resized Image 1" width="800"/>
+
+我们可以看到，模型给出了明确的治疗方案，虽然输出收到原模型的一定影响。
+
+我们再多试两个测试用例：
+
+<img src="adv2.png" alt="Resized Image 1" width="800"/>
+
 
 
 
