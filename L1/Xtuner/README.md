@@ -279,7 +279,7 @@ streamlit run /root/InternLM/Tutorial/tools/xtuner_streamlit_demo.py
 
 ## 进阶任务，基于医疗数据的模型微调
 
-在医疗数据上进行模型微调（fine-tuning）是一项复杂且重要的任务，因为医疗数据通常涉及敏感的患者信息和高度专门化的知识。我们要求internlm2_chat_1_8b模型能够在疾病门诊方面能提供有效的建议。
+在医疗数据上进行模型微调（fine-tuning）是一项复杂且重要的任务，因为医疗数据通常涉及敏感的患者信息和高度专门化的知识。我们要求internlm2_chat_1_8b模型能够在疾病问诊方面能提供有效的建议。
 
 本次微调数据集来自华驼模型仓库：https://github.com/SCIR-HI/Huatuo-Llama-Med-Chinese
 
@@ -325,6 +325,45 @@ print(json.dumps(converted_data, ensure_ascii=False, indent=4))
 得到的数据集如下：
 
 <img src="data.png" alt="Resized Image 1" width="800"/>
+
+我们先关注一下internlm2_1_8b模型本身对于医疗问答的适应程度。
+
+
+
+基座模型推理
+
+
+
+我们得到以下结果，对于医疗诊断来说过于复杂，我们希望能有简洁的回答。
+
+<img src="adv_initial.png" alt="Resized Image 1" width="800"/>
+
+
+接下来我们开始微调板块，环境和模型配置同上，就不再赘述了。
+
+我们进入internlm2_1_8b_full_custom_pretrain_e1_copy，调整模型路径配置和数据集配置。训练配置沿用基础任务的QLoRA配置, 跟之前一样把internlm2_1_8b_full_custom_pretrain_e1_copy复制进xtuner文件夹下，然后开始训练。
+
+```code
+xtuner copy-cfg internlm2_1_8b_full_custom_pretrain_e1 .
+```
+
+格式转换
+
+```code
+pth_file=`ls -t ./work_dirs/internlm2_1_8b_full_custom_pretrain_e1_copy/*.pth | head -n 1` && MKL_SERVICE_FORCE_INTEL=1 MKL_THREADING_LAYER=GNU xtuner convert pth_to_hf ./internlm2_1_8b_full_custom_pretrain_e1_copy.py ${pth_file} ./hf
+```
+
+模型合并
+
+```code
+xtuner convert merge /root/InternLM/XTuner/Shanghai_AI_Laboratory/internlm2-chat-1_8b ./hf ./medicalChat --max-shard-size 2GB
+```
+
+目标模型推理
+
+
+
+
 
 
 
