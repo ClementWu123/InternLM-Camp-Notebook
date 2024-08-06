@@ -28,3 +28,22 @@ conda activate xtuner0121
 # 执行安装
 pip install -e '.[deepspeed]'
 ```
+我们可以验证一下安装结果。
+
+```code
+xtuner version
+```
+
+<img src="xtuner_version.png" alt="Resized Image 1" width="800"/>
+
+模型准备
+
+```code
+# 创建一个目录，用来存放微调的所有资料，后续的所有操作都在该路径中进行
+mkdir -p /root/InternLM/XTuner
+cd /root/InternLM/XTuner
+mkdir -p Shanghai_AI_Laboratory
+ln -s /root/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-1_8b Shanghai_AI_Laboratory/internlm2-chat-1_8b
+```
+
+执行上述操作后，Shanghai_AI_Laboratory/internlm2-chat-1_8b 将直接成为一个符号链接，这个链接指向 /root/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-1_8b 的位置。
