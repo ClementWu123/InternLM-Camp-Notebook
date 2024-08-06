@@ -13,7 +13,7 @@
 > OpenXLab 部署教程：https://github.com/InternLM/Tutorial/tree/camp2/tools/openxlab-deploy
 
 
-安装Xtuner
+### 安装Xtuner
 
 ```code
 # 创建一个目录，用来存放源代码
@@ -36,7 +36,7 @@ xtuner version
 
 <img src="xtuner_version.png" alt="Resized Image 1" width="800"/>
 
-模型准备
+### 模型准备
 
 ```code
 # 创建一个目录，用来存放微调的所有资料，后续的所有操作都在该路径中进行
@@ -47,3 +47,32 @@ ln -s /root/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-1_8b Shanghai
 ```
 
 执行上述操作后，Shanghai_AI_Laboratory/internlm2-chat-1_8b 将直接成为一个符号链接，这个链接指向 /root/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-1_8b 的位置。
+
+使用tree命令来观察目录结构。
+
+```code
+apt-get install -y tree
+tree -l
+```
+
+目录结构应该是跟tutorial一样的。
+
+```code
+├── Shanghai_AI_Laboratory
+│   └── internlm2-chat-1_8b -> /root/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-1_8b
+│       ├── README.md
+│       ├── config.json
+│       ├── configuration.json
+│       ├── configuration_internlm2.py
+│       ├── generation_config.json
+│       ├── model-00001-of-00002.safetensors
+│       ├── model-00002-of-00002.safetensors
+│       ├── model.safetensors.index.json
+│       ├── modeling_internlm2.py
+│       ├── special_tokens_map.json
+│       ├── tokenization_internlm2.py
+│       ├── tokenization_internlm2_fast.py
+│       ├── tokenizer.model
+│       └── tokenizer_config.json
+```
+
