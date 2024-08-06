@@ -377,6 +377,104 @@ streamlit run /root/InternLM/Tutorial/tools/xtuner_streamlit_demo.py
 
 得到的回答同样比较准确，模型微调的效果应该还不错。
 
+## OpenXLab应用部署
+
+OpenXLab浦源平台以开源为核心，旨在构建开源开放的人工智能生态，促进学术成果的开放共享。OpenXLab面向 AI 研究员和开发者提供 AI 领域的一站式服务平台，包含数据集中心、模型中心和应用中心，致力于推动人工智能对产学研各领域全面赋能，为构建人工智能开放生态，推动人工智能科研与技术突破、交叉创新和产业落地提供全方位的平台支撑。
+
+首先需要在OpenXLab先创建一个空模型仓库。
+
+<img src="repo.png" alt="Resized Image 1" width="800"/>
+
+从本地上传刚刚微调的模型到模型仓库。
+
+<img src="upload.png" alt="Resized Image 1" width="800"/>
+
+我们可以看到模型被上传到线上仓库。
+
+<img src="updated_repo.png" alt="Resized Image 1" width="800"/>
+
+创建一个新的GitHub仓库来存放gradio应用代码。例如创建一个model_depoly的代码仓库，推荐的项目结构如下：
+
+```code
+├─GitHub_Repo_Name
+│  ├─app.py                 # Gradio 应用默认启动文件为app.py，应用代码相关的文件包含模型推理，应用的前端配置代码
+│  ├─requirements.txt       # 安装运行所需要的 Python 库依赖（pip 安装）
+│  ├─packages.txt           # 安装运行所需要的 Debian 依赖项（ apt-get 安装）
+|  ├─README.md              # 编写应用相关的介绍性的文档
+│  └─... 
+```
+
+requirement.txt 配置 python相关的依赖包，例如 gradio、torch、transformers 等
+
+```code
+gradio==4.10.0
+transformers
+sentencepiece
+einops
+accelerate
+tiktoken
+```
+
+packages.txt 配置下载模型权重的工具包 git 和 git-lfs
+
+```code
+git
+git-lfs
+```
+
+编写一个app.py文件，里面可以通过transformers框架进行模型实例化并通过gradio组件搭建chat聊天界面，本次代码都存放在 GitHub示例代码仓库中
+
+```python
+import gradio as gr
+import os
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer, AutoModel
+
+base_path = './medicalChat'
+os.system(f'git clone https://code.openxlab.org.cn/clementwu123/medicalchat.git {base_path}')
+os.system(f'cd {base_path} && git lfs pull')
+
+tokenizer = AutoTokenizer.from_pretrained(base_path,trust_remote_code=True)
+model = AutoModelForCausalLM.from_pretrained(base_path,trust_remote_code=True, torch_dtype=torch.float16).cuda()
+
+def chat(message,history):
+    for response,history in model.stream_chat(tokenizer,message,history,max_length=2048,top_p=0.75,temperature=1):
+        yield response
+
+gr.ChatInterface(chat,
+                 title="InternLM2-medicalChat",
+                description="""
+InternLM is mainly developed by Shanghai AI Laboratory.  
+                 """,
+                 ).queue(1).launch()
+```
+
+以上文件被放在这个仓库里https://github.com/ClementWu123/model_depoly
+
+在OpenXLab浦源平台中，部署写好的chat web-ui的应用
+
+在网页右上角点击创建gradio应用
+
+<img src="create.png" alt="Resized Image 1" width="800"/>
+
+配置如下
+
+<img src="config.png" alt="Resized Image 1" width="800"/>
+
+应用创作结束后自动开始构建。
+
+<img src="build.png" alt="Resized Image 1" width="800"/>
+
+<img src="build_finish.png" alt="Resized Image 1" width="800"/>
+
+因为GPU计算资源还没申请下来，应用暂时无法运行。后面再说了。
+
+<img src="overview.png" alt="Resized Image 1" width="800"/>
+
+
+
+
+
 
 
 
