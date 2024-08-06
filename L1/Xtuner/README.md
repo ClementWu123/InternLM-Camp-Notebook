@@ -131,6 +131,30 @@ with open('datas/assistant.json', 'w', encoding='utf-8') as f:
 
 ```
 
+执行此代码，我们得到目录结构如下：
+
+```code
+├── Shanghai_AI_Laboratory
+│   └── internlm2-chat-1_8b -> /root/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-1_8b
+│       ├── README.md
+│       ├── config.json
+│       ├── configuration.json
+│       ├── configuration_internlm2.py
+│       ├── generation_config.json
+│       ├── model-00001-of-00002.safetensors
+│       ├── model-00002-of-00002.safetensors
+│       ├── model.safetensors.index.json
+│       ├── modeling_internlm2.py
+│       ├── special_tokens_map.json
+│       ├── tokenization_internlm2.py
+│       ├── tokenization_internlm2_fast.py
+│       ├── tokenizer.model
+│       └── tokenizer_config.json
+├── datas
+│   └── assistant.json
+├── xtuner_generate_assistant.py
+```
+
 
 
 
