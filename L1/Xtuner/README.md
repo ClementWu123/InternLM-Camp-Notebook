@@ -375,7 +375,7 @@ streamlit run /root/InternLM/Tutorial/tools/xtuner_streamlit_demo.py
 
 <img src="adv2.png" alt="Resized Image 1" width="800"/>
 
-
+得到的回答同样比较准确，模型微调的效果应该还不错。
 
 
 
