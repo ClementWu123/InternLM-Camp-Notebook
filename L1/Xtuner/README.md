@@ -11,3 +11,20 @@
 - 将自我认知的模型上传到 OpenXLab，并将应用部署到 OpenXLab
 
 > OpenXLab 部署教程：https://github.com/InternLM/Tutorial/tree/camp2/tools/openxlab-deploy
+
+
+安装Xtuner
+
+```code
+# 创建一个目录，用来存放源代码
+mkdir -p /root/InternLM/code
+cd /root/InternLM/code
+git clone -b v0.1.21  https://github.com/InternLM/XTuner /root/InternLM/code/XTuner
+
+# 进入到源码目录
+cd /root/InternLM/code/XTuner
+conda activate xtuner0121
+
+# 执行安装
+pip install -e '.[deepspeed]'
+```
