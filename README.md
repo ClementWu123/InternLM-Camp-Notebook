@@ -5,3 +5,11 @@
 
 ## 项目指南：
 GitHub仓库 [https://github.com/InternLM/Tutorial](https://github.com/InternLM/Tutorial)
+
+## 1.1. 入门关卡
+
+||关卡名称|资料|
+|:-----|:----|:----|
+|第 1 关|Linux 前置基础|
+|第 2 关|Python 前置基础|
+|第 3 关|Git 前置基础|
