@@ -258,7 +258,22 @@ xtuner convert merge /root/InternLM/XTuner/Shanghai_AI_Laboratory/internlm2-chat
 
 <img src="merged.png" alt="Resized Image 1" width="800"/>
 
+### 微调后推理
 
+再次运行xtuner_streamlit_demo.py脚本来观察微调后的对话效果，不过在运行之前，我们需要将脚本中的模型路径修改为微调后的模型的路径。
+
+```code
+# 直接修改脚本文件第18行
+model_name_or_path = "/root/InternLM/XTuner/merged"
+```
+
+启动应用
+
+```code
+streamlit run /root/InternLM/Tutorial/tools/xtuner_streamlit_demo.py
+```
+
+<img src="final_result.png" alt="Resized Image 1" width="800"/>
 
 
 
