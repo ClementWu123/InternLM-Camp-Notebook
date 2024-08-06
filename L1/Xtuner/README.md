@@ -107,7 +107,7 @@ touch xtuner_generate_assistant.py
 import json
 
 # 设置用户的名字
-name = '伍鲜同志'
+name = 'Clement Wu'
 # 设置需要重复添加的数据次数
 n =  3750
 
