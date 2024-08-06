@@ -155,6 +155,20 @@ with open('datas/assistant.json', 'w', encoding='utf-8') as f:
 ├── xtuner_generate_assistant.py
 ```
 
+### 设置配置文件
+
+将config文件复制到指定位置。
+
+```code
+cd /root/InternLM/XTuner
+xtuner list-cfg -p internlm2_1_8b
+```
+我们得到下列配置文件：
+
+<img src="list_config.png" alt="Resized Image 1" width="800"/>
+
+
+
 
 
 
