@@ -281,7 +281,8 @@ streamlit run /root/InternLM/Tutorial/tools/xtuner_streamlit_demo.py
 
 在医疗数据上进行模型微调（fine-tuning）是一项复杂且重要的任务，因为医疗数据通常涉及敏感的患者信息和高度专门化的知识。我们要求internlm2_chat_1_8b模型能够在疾病门诊方面能提供有效的建议。
 
-本次微调数据集来自华驼模型仓库：https://github.com/SCIR-HI/Huatuo-Llama-Med-Chinese。里面含有8568条医疗问答数据。数据集本身符合standford-alpaca指令微调样本格式，我们只需要针对xtuner模版略微调整格式。
+本次微调数据集来自华驼模型仓库：https://github.com/SCIR-HI/Huatuo-Llama-Med-Chinese。
+里面含有8568条医疗问答数据。数据集本身符合standford-alpaca指令微调样本格式，我们只需要针对xtuner模版略微调整格式。
 
 ```python
 import json
