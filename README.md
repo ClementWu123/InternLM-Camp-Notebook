@@ -10,6 +10,6 @@ GitHub仓库 [https://github.com/InternLM/Tutorial](https://github.com/InternLM/
 
 |关卡名称|资料|
 |:-----|:----|
-|第 1 关|![Linux 前置基础 (Linux Practice)]|
-|第 2 关|![Python 前置基础 (Python Practice)]|
-|第 3 关|![Git 前置基础 (Git Practice)]|
+|第 1 关|[Linux 前置基础 (Linux Practice)]|
+|第 2 关|[Python 前置基础 (Python Practice)]|
+|第 3 关|[Git 前置基础 (Git Practice)]|
