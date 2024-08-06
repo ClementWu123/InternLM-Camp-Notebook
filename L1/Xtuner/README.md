@@ -277,6 +277,52 @@ streamlit run /root/InternLM/Tutorial/tools/xtuner_streamlit_demo.py
 
 模型可以认主人并且能回答两个问题了。
 
+## 进阶任务，基于医疗数据的模型微调
+
+在医疗数据上进行模型微调（fine-tuning）是一项复杂且重要的任务，因为医疗数据通常涉及敏感的患者信息和高度专门化的知识。我们要求internlm2_chat_1_8b模型能够在疾病门诊方面能提供有效的建议。
+
+本次微调数据集来自华驼模型仓库：https://github.com/SCIR-HI/Huatuo-Llama-Med-Chinese。里面含有8568条医疗问答数据。数据集本身符合standford-alpaca指令微调样本格式，我们只需要针对xtuner模版略微调整格式。
+
+```python
+import json
+
+# Function to convert the JSON structure
+def convert_json_structure(data):
+    return [{"conversation": [{"input": item["instruction"], "output": item["output"]}]} for item in data]
+
+# Initialize an empty list to hold the data
+data = []
+
+# Path to the input file
+input_file_path = 'input.json'  # Replace with the correct path
+
+# Read the file line by line
+with open(input_file_path, 'r', encoding='utf-8') as file:
+    for line in file:
+        try:
+            # Parse the JSON object from the line
+            item = json.loads(line.strip())
+            data.append(item)
+        except json.JSONDecodeError:
+            print(f"Skipping invalid line: {line}")
+
+# Convert the JSON structure
+converted_data = convert_json_structure(data)
+
+# Path to the output file
+output_file_path = 'output.json'
+
+# Write the converted data to a new file (optional)
+with open(output_file_path, 'w', encoding='utf-8') as file:
+    json.dump(converted_data, file, ensure_ascii=False, indent=4)
+
+# Print the converted data
+print(json.dumps(converted_data, ensure_ascii=False, indent=4))
+```
+
+得到的数据集如下：
+
+<img src="data.png" alt="Resized Image 1" width="800"/>
 
 
 
