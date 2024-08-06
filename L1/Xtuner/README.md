@@ -157,7 +157,7 @@ with open('datas/assistant.json', 'w', encoding='utf-8') as f:
 
 ### 设置配置文件
 
-将config文件复制到指定位置。
+xtuner list-cfg 命令用于列出内置的所有配置文件。参数 -p 或 --pattern 表示模式匹配，后面跟着的内容将会在所有的配置文件里进行模糊匹配搜索，然后返回最有可能得内容。
 
 ```code
 cd /root/InternLM/XTuner
@@ -166,6 +166,97 @@ xtuner list-cfg -p internlm2_1_8b
 我们得到下列配置文件：
 
 <img src="list_config.png" alt="Resized Image 1" width="800"/>
+
+复制一个预设的配置文件
+
+```code
+xtuner copy-cfg internlm2_chat_1_8b_qlora_alpaca_e3 .
+```
+
+复制好配置文件后，我们的目录结构应该是这样子的。
+
+```code
+├── Shanghai_AI_Laboratory
+│   └── internlm2-chat-1_8b -> /root/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-1_8b
+│       ├── README.md
+│       ├── config.json
+│       ├── configuration.json
+│       ├── configuration_internlm2.py
+│       ├── generation_config.json
+│       ├── model-00001-of-00002.safetensors
+│       ├── model-00002-of-00002.safetensors
+│       ├── model.safetensors.index.json
+│       ├── modeling_internlm2.py
+│       ├── special_tokens_map.json
+│       ├── tokenization_internlm2.py
+│       ├── tokenization_internlm2_fast.py
+│       ├── tokenizer.model
+│       └── tokenizer_config.json
+├── datas
+│   └── assistant.json
+├── internlm2_chat_1_8b_qlora_alpaca_e3_copy.py
+├── xtuner_generate_assistant.py
+```
+
+### 模型训练
+
+```code
+xtuner train ./internlm2_chat_1_8b_qlora_alpaca_e3_copy.py
+```
+
+训练开始
+
+<img src="start_training.png" alt="Resized Image 1" width="800"/>
+
+训练结束
+
+<img src="after_training.png" alt="Resized Image 1" width="800"/>
+
+30% A100显卡训练20分钟就结束了。
+
+训练完后，我们的目录结构应该是这样。
+
+```code
+├── work_dirs
+│   └── internlm2_chat_1_8b_qlora_alpaca_e3_copy
+│       ├── 20240805_173651
+│       │   ├── 20240805_173651.log
+│       │   └── vis_data
+│       │       ├── 20240805_173651.json
+│       │       ├── config.py
+│       │       ├── eval_outputs_iter_383.txt
+│       │       └── scalars.json
+│       ├── internlm2_chat_1_8b_qlora_alpaca_e3_copy.py
+│       ├── iter_384.pth
+│       └── last_checkpoint
+```
+
+### 模型转换
+
+将训练出来的模型权重文件转换为目前通用的 HuggingFace 格式文件。
+
+```code
+# 先获取最后保存的一个pth文件
+pth_file=`ls -t ./work_dirs/internlm2_chat_1_8b_qlora_alpaca_e3_copy/*.pth | head -n 1`
+export MKL_SERVICE_FORCE_INTEL=1
+export MKL_THREADING_LAYER=GNU
+xtuner convert pth_to_hf ./internlm2_chat_1_8b_qlora_alpaca_e3_copy.py ${pth_file} ./hf
+```
+
+对于 LoRA 或者 QLoRA 微调出来的模型其实并不是一个完整的模型，而是一个额外的层（Adapter），训练完的这个层最终还是要与原模型进行合并才能被正常的使用。在 XTuner 中提供了一键合并的命令 xtuner convert merge，在使用前我们需要准备好三个路径，包括原模型的路径、训练好的 Adapter 层的（模型格式转换后的）路径以及最终保存的路径。
+
+```code
+export MKL_SERVICE_FORCE_INTEL=1
+export MKL_THREADING_LAYER=GNU
+xtuner convert merge /root/InternLM/XTuner/Shanghai_AI_Laboratory/internlm2-chat-1_8b ./hf ./merged --max-shard-size 2GB
+```
+
+
+
+
+
+
+
 
 
 
