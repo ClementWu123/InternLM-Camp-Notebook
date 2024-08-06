@@ -84,7 +84,7 @@ tree -l
 streamlit run /root/InternLM/Tutorial/tools/xtuner_streamlit_demo.py
 ```
 
-<img src="initial_result.png" alt="Resized Image 1" width="800"/>
+<img src="intial_result.png" alt="Resized Image 1" width="800"/>
 
 
 
