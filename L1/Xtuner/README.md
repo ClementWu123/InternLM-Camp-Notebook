@@ -275,7 +275,7 @@ streamlit run /root/InternLM/Tutorial/tools/xtuner_streamlit_demo.py
 
 <img src="final_result.png" alt="Resized Image 1" width="800"/>
 
-
+模型可以认主人并且能回答两个问题了。
 
 
 
