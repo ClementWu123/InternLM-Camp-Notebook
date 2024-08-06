@@ -76,3 +76,17 @@ tree -l
 │       └── tokenizer_config.json
 ```
 
+## 模型部署及微调
+
+通过网页端的 Demo 来看看微调前 internlm2-chat-1_8b 的对话效果。在本地通过浏览器访问：http://127.0.0.1:8501 来进行对话。
+
+```code
+streamlit run /root/InternLM/Tutorial/tools/xtuner_streamlit_demo.py
+```
+
+<img src="initial_result.png" alt="Resized Image 1" width="800"/>
+
+
+
+
+
