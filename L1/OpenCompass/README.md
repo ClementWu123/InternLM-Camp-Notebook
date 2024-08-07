@@ -61,3 +61,98 @@ OpenCompass 采取客观评测与主观评测相结合的方法。针对具有�
 ### 主观评测
 
 语言表达生动精彩，变化丰富，大量的场景和能力无法凭借客观指标进行评测。针对如模型安全和模型语言能力的评测，以人的主观感受为主的评测更能体现模型的真实能力，并更符合大模型的实际使用场景。 OpenCompass 采取的主观评测方案是指借助受试者的主观判断对具有对话能力的大语言模型进行能力评测。在具体实践中，我们提前基于模型的能力维度构建主观测试问题集合，并将不同模型对于同一问题的不同回复展现给受试者，收集受试者基于主观感受的评分。由于主观测试成本高昂，本方案同时也采用使用性能优异的大语言模拟人类进行主观打分。在实际评测中，本文将采用真实人类专家的主观评测与基于模型打分的主观评测相结合的方式开展模型能力评估。 在具体开展主观评测时，OpenComapss 采用单模型回复满意度统计和多模型满意度比较两种方式开展具体的评测工作。
+
+## OpenCompass评测快速开始
+
+### 概览
+
+在 OpenCompass 中评估一个模型通常包括以下几个阶段：配置 -> 推理 -> 评估 -> 可视化。
+
+配置：这是整个工作流的起点。您需要配置整个评估过程，选择要评估的模型和数据集。此外，还可以选择评估策略、计算后端等，并定义显示结果的方式。
+
+推理与评估：在这个阶段，OpenCompass 将会开始对模型和数据集进行并行推理和评估。推理阶段主要是让模型从数据集产生输出，而评估阶段则是衡量这些输出与标准答案的匹配程度。这两个过程会被拆分为多个同时运行的“任务”以提高效率，但请注意，如果计算资源有限，这种策略可能会使评测变得更慢。如果需要了解该问题及解决方案，可以参考 FAQ: 效率。
+
+可视化：评估完成后，OpenCompass 将结果整理成易读的表格，并将其保存为 CSV 和 TXT 文件。你也可以激活飞书状态上报功能，此后可以在飞书客户端中及时获得评测状态报告。 接下来，我们将展示 OpenCompass 的基础用法，展示书生浦语在 C-Eval 基准任务上的评估。它们的配置文件可以在 configs/eval_demo.py 中找到。
+
+## 使用 OpenCompass 评测 internlm2-chat-1_8b 模型在 C-Eval 数据集上的性能
+
+### 环境配置
+
+#### 安装
+
+```code
+git clone https://github.com/open-compass/opencompass.git
+cd opencompass
+pip install -e .
+```
+#### 数据准备
+
+解压评测数据集到 data/ 处
+
+```code
+cp /share/temp/datasets/OpenCompassData-core-20231110.zip /root/opencompass/
+unzip OpenCompassData-core-20231110.zip
+```
+将会在 OpenCompass 下看到data文件夹
+
+#### 查看支持的数据集和模型
+
+列出所有跟 InternLM 及 C-Eval 相关的配置
+
+```code
+python tools/list_configs.py internlm ceval
+```
+
+<img src="config.png" alt="Resized Image 1" width="800"/>
+
+```code
++----------------------------------------+----------------------------------------------------------------------+
+| Model                                  | Config Path                                                          |
+|----------------------------------------+----------------------------------------------------------------------|
+| hf_internlm2_1_8b                      | configs/models/hf_internlm/hf_internlm2_1_8b.py                      |
+| hf_internlm2_20b                       | configs/models/hf_internlm/hf_internlm2_20b.py                       |
+| hf_internlm2_7b                        | configs/models/hf_internlm/hf_internlm2_7b.py                        |
+| hf_internlm2_base_20b                  | configs/models/hf_internlm/hf_internlm2_base_20b.py                  |
+| hf_internlm2_base_7b                   | configs/models/hf_internlm/hf_internlm2_base_7b.py                   |
+| hf_internlm2_chat_1_8b                 | configs/models/hf_internlm/hf_internlm2_chat_1_8b.py                 |
+| hf_internlm2_chat_1_8b_sft             | configs/models/hf_internlm/hf_internlm2_chat_1_8b_sft.py             |
+| hf_internlm2_chat_20b                  | configs/models/hf_internlm/hf_internlm2_chat_20b.py                  |
+| hf_internlm2_chat_20b_sft              | configs/models/hf_internlm/hf_internlm2_chat_20b_sft.py              |
+| hf_internlm2_chat_20b_with_system      | configs/models/hf_internlm/hf_internlm2_chat_20b_with_system.py      |
+| hf_internlm2_chat_7b                   | configs/models/hf_internlm/hf_internlm2_chat_7b.py                   |
+| hf_internlm2_chat_7b_sft               | configs/models/hf_internlm/hf_internlm2_chat_7b_sft.py               |
+| hf_internlm2_chat_7b_with_system       | configs/models/hf_internlm/hf_internlm2_chat_7b_with_system.py       |
+| hf_internlm2_chat_math_20b             | configs/models/hf_internlm/hf_internlm2_chat_math_20b.py             |
+| hf_internlm2_chat_math_20b_with_system | configs/models/hf_internlm/hf_internlm2_chat_math_20b_with_system.py |
+| hf_internlm2_chat_math_7b              | configs/models/hf_internlm/hf_internlm2_chat_math_7b.py              |
+| hf_internlm2_chat_math_7b_with_system  | configs/models/hf_internlm/hf_internlm2_chat_math_7b_with_system.py  |
+| hf_internlm_20b                        | configs/models/hf_internlm/hf_internlm_20b.py                        |
+| hf_internlm_7b                         | configs/models/hf_internlm/hf_internlm_7b.py                         |
+| hf_internlm_chat_20b                   | configs/models/hf_internlm/hf_internlm_chat_20b.py                   |
+| hf_internlm_chat_7b                    | configs/models/hf_internlm/hf_internlm_chat_7b.py                    |
+| hf_internlm_chat_7b_8k                 | configs/models/hf_internlm/hf_internlm_chat_7b_8k.py                 |
+| hf_internlm_chat_7b_v1_1               | configs/models/hf_internlm/hf_internlm_chat_7b_v1_1.py               |
+| internlm_7b                            | configs/models/internlm/internlm_7b.py                               |
+| ms_internlm_chat_7b_8k                 | configs/models/ms_internlm/ms_internlm_chat_7b_8k.py                 |
++----------------------------------------+----------------------------------------------------------------------+
++--------------------------------+-------------------------------------------------------------------+
+| Dataset                        | Config Path                                                       |
+|--------------------------------+-------------------------------------------------------------------|
+| ceval_clean_ppl                | configs/datasets/ceval/ceval_clean_ppl.py                         |
+| ceval_contamination_ppl_810ec6 | configs/datasets/contamination/ceval_contamination_ppl_810ec6.py  |
+| ceval_gen                      | configs/datasets/ceval/ceval_gen.py                               |
+| ceval_gen_2daf24               | configs/datasets/ceval/ceval_gen_2daf24.py                        |
+| ceval_gen_5f30c7               | configs/datasets/ceval/ceval_gen_5f30c7.py                        |
+| ceval_ppl                      | configs/datasets/ceval/ceval_ppl.py                               |
+| ceval_ppl_1cd8bf               | configs/datasets/ceval/ceval_ppl_1cd8bf.py                        |
+| ceval_ppl_578f8d               | configs/datasets/ceval/ceval_ppl_578f8d.py                        |
+| ceval_ppl_93e5ce               | configs/datasets/ceval/ceval_ppl_93e5ce.py                        |
+| ceval_zero_shot_gen_bd40ef     | configs/datasets/ceval/ceval_zero_shot_gen_bd40ef.py              |
+| configuration_internlm         | configs/datasets/cdme/internlm2-chat-7b/configuration_internlm.py |
+| modeling_internlm2             | configs/datasets/cdme/internlm2-chat-7b/modeling_internlm2.py     |
+| tokenization_internlm          | configs/datasets/cdme/internlm2-chat-7b/tokenization_internlm.py  |
++--------------------------------+-------------------------------------------------------------------+
+```
+
+
+
