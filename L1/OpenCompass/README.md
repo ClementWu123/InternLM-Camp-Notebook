@@ -327,7 +327,7 @@ from opencompass.partitioners.sub_naive import SubjectiveNaivePartitioner
 
 设置我们关注的模型。
 
-```code
+```python
 models = [
     dict(
         type=HuggingFacewithChatTemplate,
