@@ -446,5 +446,77 @@ python run.py configs/eval_subjective_custom.py -r --debug
 
 <img src="start_sub.png" alt="Resized Image 1" width="800"/>
 
+## 使用OpenCompass进行调用API评测
+
+我们可以调用阿里巴巴的Qwen Max大模型api进行测试。我们先安装调用千问模型api的包：
+
+```code
+pip install dashscope
+```
+
+导入模型等相关配置
+
+```python
+from mmengine.config import read_base
+from opencompass.models import Qwen
+from opencompass.partitioners import NaivePartitioner
+from opencompass.runners.local_api import LocalAPIRunner
+from opencompass.tasks import OpenICLInferTask
+```
+
+导入数据
+
+```python
+with read_base():
+    from ..summarizers.medium import summarizer
+    from ..datasets.ceval.ceval_gen_5f30c7 import ceval_datasets
+
+datasets = [
+    *ceval_datasets,
+]
+```
+
+配置模型相关参数
+
+```python
+models = [
+    dict(
+        abbr='qwen-max',
+        type=Qwen,
+        path='qwen-max',
+        key='xxxxxxxxx',  # please give you key
+        generation_kwargs={
+            'enable_search': False,
+        },
+        query_per_second=1,
+        max_out_len=2048,
+        max_seq_len=2048,
+        batch_size=8
+    ),
+]
+```
+
+配置推理任务
+
+```python
+infer = dict(
+    partitioner=dict(type=NaivePartitioner),
+    runner=dict(
+        type=LocalAPIRunner,
+        max_num_workers=1,
+        concurrent_users=1,
+        task=dict(type=OpenICLInferTask)),
+)
+```
+
+设置保存路径
+
+```python
+work_dir = 'outputs/api_qwen/'
+```
+
+以下是运行结果：
+
+<img src="run_api.png" alt="Resized Image 1" width="800"/>
 
 
