@@ -325,6 +325,17 @@ from opencompass.partitioners import NaivePartitioner
 from opencompass.partitioners.sub_naive import SubjectiveNaivePartitioner
 ```
 
+设置模型问答模板
+
+```python
+api_meta_template = dict(
+    round=[
+        dict(role='HUMAN', api_role='HUMAN'),
+        dict(role='BOT', api_role='BOT', generate=True),
+    ]
+)
+```
+
 设置我们关注的模型。
 
 ```python
@@ -346,6 +357,7 @@ models = [
         generation_kwargs=dict(
             do_sample=True,
         ),
+        meta_template=api_meta_template,
         max_out_len=16,
         max_seq_len=1024,
         batch_size=16,
@@ -360,6 +372,15 @@ models = [
 
 ```python
 datasets = [*alignbench_datasets]
+```
+
+定义推理任务的执行方式，具体包括数据的分区方式、任务的运行方式以及运行时的最大工作线程数。
+
+```python
+infer = dict(
+    partitioner=dict(type=NaivePartitioner),
+    runner=dict(type=LocalRunner, max_num_workers=16, task=dict(type=OpenICLInferTask)),
+)
 ```
 
 judgemodel通常被设置为GPT4等强力模型，可以直接按照config文件中的配置填入自己的API key，或使用自定义的模型作为judgemodel。这里我们选择了一个参数相对没那么多的模型作为评估模型，internlm2-chat-7b。
@@ -383,6 +404,7 @@ judge_models = [
         generation_kwargs=dict(
             do_sample=True,
         ),
+        meta_template=api_meta_template,
         max_out_len=16,
         max_seq_len=1024,
         batch_size=16,
@@ -396,7 +418,7 @@ judge_models = [
 ```python
 eval = dict(
     partitioner=dict(type=SubjectiveNaivePartitioner, models=models, judge_models=judge_models,),
-    runner=dict(type=LocalRunner, max_num_workers=128, task=dict(type=SubjectiveEvalTask)),
+    runner=dict(type=LocalRunner, max_num_workers=16, task=dict(type=SubjectiveEvalTask)),
 )
 ```
 
