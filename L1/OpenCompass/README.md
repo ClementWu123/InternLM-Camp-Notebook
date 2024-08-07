@@ -302,7 +302,127 @@ ceval                                           -          naive_average  gen   
 
 跟tutorial里略有些出入。
 
+## 使用OpenCompass进行主观评测
 
+类似于客观评测的方式，导入需要评测的datasets。我们在configs文件夹下创建一个eval_subjective_custom.py。
+
+```python
+from mmengine.config import read_base
+
+with read_base():
+    from .datasets.subjective.alignbench.alignbench_judgeby_critiquellm import alignbench_datasets
+```
+
+导入模型模版，分片，推理，评估以及总结参数的指定工具。
+
+```python
+from opencompass.models import HuggingFacewithChatTemplate
+from opencompass.tasks import OpenICLInferTask
+from opencompass.tasks.subjective_eval import SubjectiveEvalTask
+from opencompass.summarizers import SubjectiveSummarizer
+from opencompass.runners import LocalRunner
+from opencompass.partitioners import NaivePartitioner
+from opencompass.partitioners.sub_naive import SubjectiveNaivePartitioner
+```
+
+设置我们关注的模型。
+
+```code
+models = [
+    dict(
+        type=HuggingFacewithChatTemplate,
+        abbr='internlm2-chat-1_8b',
+        path='/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-1_8b',
+        tokenizer_path='/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-1_8b',
+        model_kwargs=dict(
+            device_map='auto',
+            trust_remote_code=True,
+        ),
+        tokenizer_kwargs=dict(
+            padding_side='left',
+            truncation='left',
+            trust_remote_code=True
+        ),
+        generation_kwargs=dict(
+            do_sample=True,
+        ),
+        max_out_len=16,
+        max_seq_len=1024,
+        batch_size=16,
+        run_cfg=dict(num_gpus=1)
+    )
+]
+```
+
+因为运行时间原因，我们调大了batch size。由于主观评测的模型设置参数通常与客观评测不同，往往需要设置do_sample的方式进行推理而不是greedy，故可以在配置文件中自行修改相关参数。
+
+指定数据集
+
+```python
+datasets = [*alignbench_datasets]
+```
+
+judgemodel通常被设置为GPT4等强力模型，可以直接按照config文件中的配置填入自己的API key，或使用自定义的模型作为judgemodel。这里我们选择了一个参数相对没那么多的模型作为评估模型，internlm2-chat-7b。
+
+```python
+judge_models = [
+    dict(
+        type=HuggingFacewithChatTemplate,
+        abbr='internlm2-chat-7b',
+        path='/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-7b',
+        tokenizer_path='/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-7b',
+        model_kwargs=dict(
+            device_map='auto',
+            trust_remote_code=True,
+        ),
+        tokenizer_kwargs=dict(
+            padding_side='left',
+            truncation='left',
+            trust_remote_code=True
+        ),
+        generation_kwargs=dict(
+            do_sample=True,
+        ),
+        max_out_len=16,
+        max_seq_len=1024,
+        batch_size=16,
+        run_cfg=dict(num_gpus=1)
+    )
+]
+```
+
+定义主观评估任务的执行方式，具体包括数据的分区方式、任务的运行方式以及运行时的最大工作线程数。
+
+```python
+eval = dict(
+    partitioner=dict(type=SubjectiveNaivePartitioner, models=models, judge_models=judge_models,),
+    runner=dict(type=LocalRunner, max_num_workers=128, task=dict(type=SubjectiveEvalTask)),
+)
+```
+
+定义一个总结器，用于汇总和分析主观评估任务的结果。
+
+```python
+summarizer = dict(type=SubjectiveSummarizer, function='subjective')
+```
+
+指定工作路径，用于存储评估文件。
+
+```python
+work_dir = 'outputs/subjective/'
+```
+
+启动评测并输出评测结果
+
+```code
+python run.py configs/eval_subjective_custom.py -r --debug
+```
+
+-r 参数支持复用模型推理和评估结果, 第一次运行我就没加了。
+
+<img src="run_sub.png" alt="Resized Image 1" width="800"/>
+
+<img src="start_sub.png" alt="Resized Image 1" width="800"/>
 
 
 
