@@ -429,7 +429,9 @@ python run.py configs/eval_subjective_custom.py -r --debug
 
 -r 参数支持复用模型推理和评估结果, 第一次运行我就没加了。
 
-<img src="start_sub.png" alt="Resized Image 1" width="800"/>sub
+<img src="run_sub.png" alt="Resized Image 1" width="800"/>
+
+<img src="start_sub.png" alt="Resized Image 1" width="800"/>
 
 
 
