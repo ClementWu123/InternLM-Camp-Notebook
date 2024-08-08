@@ -325,9 +325,20 @@ from opencompass.partitioners import NaivePartitioner
 from opencompass.partitioners.sub_naive import SubjectiveNaivePartitioner
 ```
 
+设置模型问答模板
+
+```python
+api_meta_template = dict(
+    round=[
+        dict(role='HUMAN', api_role='HUMAN'),
+        dict(role='BOT', api_role='BOT', generate=True),
+    ]
+)
+```
+
 设置我们关注的模型。
 
-```code
+```python
 models = [
     dict(
         type=HuggingFacewithChatTemplate,
@@ -346,6 +357,7 @@ models = [
         generation_kwargs=dict(
             do_sample=True,
         ),
+        meta_template=api_meta_template,
         max_out_len=16,
         max_seq_len=1024,
         batch_size=16,
@@ -360,6 +372,15 @@ models = [
 
 ```python
 datasets = [*alignbench_datasets]
+```
+
+定义推理任务的执行方式，具体包括数据的分区方式、任务的运行方式以及运行时的最大工作线程数。
+
+```python
+infer = dict(
+    partitioner=dict(type=NaivePartitioner),
+    runner=dict(type=LocalRunner, max_num_workers=16, task=dict(type=OpenICLInferTask)),
+)
 ```
 
 judgemodel通常被设置为GPT4等强力模型，可以直接按照config文件中的配置填入自己的API key，或使用自定义的模型作为judgemodel。这里我们选择了一个参数相对没那么多的模型作为评估模型，internlm2-chat-7b。
@@ -383,6 +404,7 @@ judge_models = [
         generation_kwargs=dict(
             do_sample=True,
         ),
+        meta_template=api_meta_template,
         max_out_len=16,
         max_seq_len=1024,
         batch_size=16,
@@ -396,7 +418,7 @@ judge_models = [
 ```python
 eval = dict(
     partitioner=dict(type=SubjectiveNaivePartitioner, models=models, judge_models=judge_models,),
-    runner=dict(type=LocalRunner, max_num_workers=128, task=dict(type=SubjectiveEvalTask)),
+    runner=dict(type=LocalRunner, max_num_workers=16, task=dict(type=SubjectiveEvalTask)),
 )
 ```
 
@@ -424,5 +446,77 @@ python run.py configs/eval_subjective_custom.py -r --debug
 
 <img src="start_sub.png" alt="Resized Image 1" width="800"/>
 
+## 使用OpenCompass进行调用API评测
+
+我们可以调用阿里巴巴的Qwen Max大模型api进行测试。我们先安装调用千问模型api的包：
+
+```code
+pip install dashscope
+```
+
+导入模型等相关配置
+
+```python
+from mmengine.config import read_base
+from opencompass.models import Qwen
+from opencompass.partitioners import NaivePartitioner
+from opencompass.runners.local_api import LocalAPIRunner
+from opencompass.tasks import OpenICLInferTask
+```
+
+导入数据
+
+```python
+with read_base():
+    from ..summarizers.medium import summarizer
+    from ..datasets.ceval.ceval_gen_5f30c7 import ceval_datasets
+
+datasets = [
+    *ceval_datasets,
+]
+```
+
+配置模型相关参数
+
+```python
+models = [
+    dict(
+        abbr='qwen-max',
+        type=Qwen,
+        path='qwen-max',
+        key='xxxxxxxxx',  # please give you key
+        generation_kwargs={
+            'enable_search': False,
+        },
+        query_per_second=1,
+        max_out_len=2048,
+        max_seq_len=2048,
+        batch_size=8
+    ),
+]
+```
+
+配置推理任务
+
+```python
+infer = dict(
+    partitioner=dict(type=NaivePartitioner),
+    runner=dict(
+        type=LocalAPIRunner,
+        max_num_workers=1,
+        concurrent_users=1,
+        task=dict(type=OpenICLInferTask)),
+)
+```
+
+设置保存路径
+
+```python
+work_dir = 'outputs/api_qwen/'
+```
+
+以下是运行结果：
+
+<img src="run_api.png" alt="Resized Image 1" width="800"/>
 
 
