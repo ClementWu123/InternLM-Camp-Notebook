@@ -635,4 +635,69 @@ work_dir = 'outputs/api_qwen/'
 
 <img src="run_api.png" alt="Resized Image 1" width="800"/>
 
+```code
+-------------------------------
+Model: qwen-max
+ceval-computer_network: {'accuracy': 78.94736842105263}
+ceval-operating_system: {'accuracy': 78.94736842105263}
+ceval-computer_architecture: {'accuracy': 95.23809523809523}
+ceval-college_programming: {'accuracy': 81.08108108108108}
+ceval-college_physics: {'accuracy': 78.94736842105263}
+ceval-college_chemistry: {'accuracy': 75.0}
+ceval-advanced_mathematics: {'accuracy': 52.63157894736842}
+ceval-probability_and_statistics: {'accuracy': 66.66666666666666}
+ceval-discrete_mathematics: {'accuracy': 56.25}
+ceval-electrical_engineer: {'accuracy': 81.08108108108108}
+ceval-metrology_engineer: {'accuracy': 87.5}
+ceval-high_school_mathematics: {'accuracy': 33.33333333333333}
+ceval-high_school_physics: {'accuracy': 68.42105263157895}
+ceval-high_school_chemistry: {'accuracy': 94.73684210526315}
+ceval-high_school_biology: {'accuracy': 84.21052631578947}
+ceval-middle_school_mathematics: {'accuracy': 68.42105263157895}
+ceval-middle_school_biology: {'accuracy': 90.47619047619048}
+ceval-middle_school_physics: {'accuracy': 94.73684210526315}
+ceval-middle_school_chemistry: {'accuracy': 90.0}
+ceval-veterinary_medicine: {'accuracy': 82.6086956521739}
+ceval-college_economics: {'accuracy': 76.36363636363637}
+ceval-business_administration: {'accuracy': 90.9090909090909}
+ceval-marxism: {'accuracy': 94.73684210526315}
+ceval-mao_zedong_thought: {'accuracy': 100.0}
+ceval-education_science: {'accuracy': 89.65517241379311}
+ceval-teacher_qualification: {'accuracy': 93.18181818181817}
+ceval-high_school_politics: {'accuracy': 100.0}
+ceval-high_school_geography: {'accuracy': 94.73684210526315}
+ceval-middle_school_politics: {'accuracy': 95.23809523809523}
+ceval-middle_school_geography: {'accuracy': 91.66666666666666}
+ceval-modern_chinese_history: {'accuracy': 91.30434782608695}
+ceval-ideological_and_moral_cultivation: {'accuracy': 100.0}
+ceval-logic: {'accuracy': 86.36363636363636}
+ceval-law: {'accuracy': 87.5}
+ceval-chinese_language_and_literature: {'accuracy': 73.91304347826086}
+ceval-art_studies: {'accuracy': 90.9090909090909}
+ceval-professional_tour_guide: {'accuracy': 100.0}
+ceval-legal_professional: {'accuracy': 60.86956521739131}
+ceval-high_school_chinese: {'accuracy': 94.73684210526315}
+ceval-high_school_history: {'accuracy': 90.0}
+ceval-middle_school_history: {'accuracy': 95.45454545454545}
+ceval-civil_servant: {'accuracy': 76.59574468085107}
+ceval-sports_science: {'accuracy': 89.47368421052632}
+ceval-plant_protection: {'accuracy': 90.9090909090909}
+ceval-basic_medicine: {'accuracy': 84.21052631578947}
+ceval-clinical_medicine: {'accuracy': 90.9090909090909}
+ceval-urban_and_rural_planner: {'accuracy': 89.13043478260869}
+ceval-accountant: {'accuracy': 87.75510204081633}
+ceval-fire_engineer: {'accuracy': 87.09677419354838}
+ceval-environmental_impact_assessment_engineer: {'accuracy': 87.09677419354838}
+ceval-tax_accountant: {'accuracy': 93.87755102040816}
+ceval-physician: {'accuracy': 93.87755102040816}
+ceval-stem: {'naive_average': 76.96175717643108}
+ceval-social-science: {'naive_average': 92.64881639836265}
+ceval-humanities: {'naive_average': 88.27737012311592}
+ceval-other: {'naive_average': 88.26657493424428}
+ceval-hard: {'naive_average': 65.74835526315789}
+ceval: {'naive_average': 84.76359044506174}
+```
+
+看起来非常不错。
+
 
