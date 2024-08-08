@@ -304,25 +304,29 @@ ceval                                           -          naive_average  gen   
 
 ## 使用OpenCompass进行主观评测
 
-类似于客观评测的方式，导入需要评测的datasets。我们在configs文件夹下创建一个eval_subjective_custom.py。
+类似于客观评测的方式，导入需要评测的datasets。我们在configs文件夹下创建一个eval_subjective_custom.py。我们此次使用compassbench作为主观数据集。我们使用Compare模式：将模型的回答进行两两比较，以计算对战其胜率。
 
 ```python
 from mmengine.config import read_base
 
 with read_base():
-    from .datasets.subjective.alignbench.alignbench_judgeby_critiquellm import alignbench_datasets
+    from .datasets.subjective.compassbench.compassbench_checklist import (
+        checklist_datasets,
+    )
 ```
 
 导入模型模版，分片，推理，评估以及总结参数的指定工具。
 
 ```python
-from opencompass.models import HuggingFacewithChatTemplate
-from opencompass.tasks import OpenICLInferTask
-from opencompass.tasks.subjective_eval import SubjectiveEvalTask
-from opencompass.summarizers import SubjectiveSummarizer
-from opencompass.runners import LocalRunner
 from opencompass.partitioners import NaivePartitioner
 from opencompass.partitioners.sub_naive import SubjectiveNaivePartitioner
+from opencompass.runners import LocalRunner
+from opencompass.tasks import OpenICLInferTask
+from opencompass.tasks.subjective_eval import SubjectiveEvalTask
+
+from opencompass.summarizers.subjective.compassbench_v13 import CompassBenchSummarizer
+from opencompass.models import HuggingFacewithChatTemplate
+from opencompass.models import TurboMindModelwithChatTemplate
 ```
 
 设置模型问答模板
@@ -341,28 +345,28 @@ api_meta_template = dict(
 ```python
 models = [
     dict(
-        type=HuggingFacewithChatTemplate,
-        abbr='internlm2-chat-1_8b',
-        path='/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-1_8b',
-        tokenizer_path='/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-1_8b',
-        model_kwargs=dict(
-            device_map='auto',
-            trust_remote_code=True,
-        ),
-        tokenizer_kwargs=dict(
-            padding_side='left',
-            truncation='left',
-            trust_remote_code=True
-        ),
-        generation_kwargs=dict(
-            do_sample=True,
-        ),
-        meta_template=api_meta_template,
-        max_out_len=16,
-        max_seq_len=1024,
+        type=TurboMindModelwithChatTemplate,
+        abbr='internlm2-chat-1.8b-turbomind',
+        path='internlm/internlm2-chat-1_8b',
+        engine_config=dict(session_len=7168, max_batch_size=16, tp=1),
+        gen_config=dict(top_k=1000, temperature=1, top_p=0.9, max_new_tokens=2048),
+        max_seq_len=7168,
+        max_out_len=2048,
         batch_size=16,
-        run_cfg=dict(num_gpus=1)
-    )
+        run_cfg=dict(num_gpus=1),
+    ),
+    # Mock as gpt4o
+    dict(
+        type=TurboMindModelwithChatTemplate,
+        abbr='gpt4o',
+        path='internlm/internlm2_5-1_8b-chat',
+        engine_config=dict(session_len=7168, max_batch_size=16, tp=1),
+        gen_config=dict(top_k=1000, temperature=1, top_p=0.9, max_new_tokens=2048),
+        max_seq_len=7168,
+        max_out_len=2048,
+        batch_size=16,
+        run_cfg=dict(num_gpus=1),
+    ),
 ]
 ```
 
@@ -371,10 +375,10 @@ models = [
 指定数据集
 
 ```python
-datasets = [*alignbench_datasets]
+datasets = [*checklist_datasets]
 ```
 
-定义推理任务的执行方式，具体包括数据的分区方式、任务的运行方式以及运行时的最大工作线程数。
+定义推理任务的执行方式，具体包括数据的分区方式、任务的运行方式以及运行时的最大工作数。
 
 ```python
 infer = dict(
@@ -383,61 +387,43 @@ infer = dict(
 )
 ```
 
-judgemodel通常被设置为GPT4等强力模型，可以直接按照config文件中的配置填入自己的API key，或使用自定义的模型作为judgemodel。这里我们选择了一个参数相对没那么多的模型作为评估模型，internlm2-chat-7b。
+judgemodel通常被设置为GPT4等强力模型，可以直接按照config文件中的配置填入自己的API key，或使用自定义的模型作为judgemodel。因为显存原因，这里我们选择了一个参数相对没那么多的模型作为虚假的gpt4o评估模型，internlm2_5-1_8b-chat。
 
 ```python
-judge_models = [
-    dict(
-        type=HuggingFacewithChatTemplate,
-        abbr='internlm2-chat-7b',
-        path='/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-7b',
-        tokenizer_path='/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-7b',
-        model_kwargs=dict(
-            device_map='auto',
-            trust_remote_code=True,
-        ),
-        tokenizer_kwargs=dict(
-            padding_side='left',
-            truncation='left',
-            trust_remote_code=True
-        ),
-        generation_kwargs=dict(
-            do_sample=True,
-        ),
-        meta_template=api_meta_template,
-        max_out_len=16,
-        max_seq_len=1024,
-        batch_size=16,
-        run_cfg=dict(num_gpus=1)
-    )
-]
+judge_models = [models[1]]
 ```
 
 定义主观评估任务的执行方式，具体包括数据的分区方式、任务的运行方式以及运行时的最大工作线程数。
 
 ```python
 eval = dict(
-    partitioner=dict(type=SubjectiveNaivePartitioner, models=models, judge_models=judge_models,),
-    runner=dict(type=LocalRunner, max_num_workers=16, task=dict(type=SubjectiveEvalTask)),
+    partitioner=dict(
+        type=SubjectiveNaivePartitioner,
+        models=models,
+        judge_models=judge_models,
+    ),
+    runner=dict(
+        type=LocalRunner, max_num_workers=16, task=dict(type=SubjectiveEvalTask)
+    ),
 )
 ```
 
 定义一个总结器，用于汇总和分析主观评估任务的结果。
 
 ```python
-summarizer = dict(type=SubjectiveSummarizer, function='subjective')
+summarizer = dict(type=CompassBenchSummarizer)
 ```
 
 指定工作路径，用于存储评估文件。
 
 ```python
-work_dir = 'outputs/subjective/'
+work_dir = 'outputs/debug_checklist/'
 ```
 
 启动评测并输出评测结果
 
 ```code
-python run.py configs/eval_subjective_custom.py -r --debug
+python run.py configs/eval_subjective_custom.py -r
 ```
 
 -r 参数支持复用模型推理和评估结果, 第一次运行我就没加了。
