@@ -502,7 +502,7 @@ python run.py configs/eval_lmdepoly.py
 
 <img src="api.png" alt="Resized Image 1" width="800"/>
 
-速度变快了，结果好像一样。
+结果一样。
 
 ```code
 dataset                                         version    metric    mode      internlm2-chat-1_8b-turbomind
@@ -562,7 +562,7 @@ ceval-physician                                 6e277d     accuracy  gen        
 ```
 
 
-## 使用OpenCompass进行调用API评测
+## 使用OpenCompass进行调用热门大模型API评测
 
 我们可以调用阿里巴巴的Qwen Max大模型api进行测试。我们先安装调用千问模型api的包：
 
