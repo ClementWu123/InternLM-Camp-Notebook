@@ -564,7 +564,7 @@ ceval-physician                                 6e277d     accuracy  gen        
 
 ## 使用OpenCompass进行调用热门大模型API评测
 
-我们可以调用阿里巴巴的Qwen Max大模型api进行测试。我们先安装调用千问模型api的包：
+我们可以调用阿里巴巴的Qwen Max大模型api进行测试。我们先安装调用阿里云模型服务灵积的包：
 
 ```code
 pip install dashscope
