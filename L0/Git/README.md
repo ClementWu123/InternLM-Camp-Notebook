@@ -1,3 +1,21 @@
+<img width="1440" alt="B站封面" src="https://github.com/user-attachments/assets/200d376f-fe91-4768-9ed6-d9624ede9301">
+
+
+欢迎参加 InternLM Git 教程！此教程旨在帮助您学习和掌握 Git 版本控制系统的基础知识和操作技能。通过完成一系列任务，您将能够更好地理解 Git 的使用，并应用到实际的项目开发中。
+
+# 关卡任务
+
+以下任务均为**必做任务**，完成任务后提交相应链接即可。
+
+| 任务编号 | 任务名称     | 任务描述                                     | 
+|----------|--------------|----------------------------------------------|
+| 1        | 破冰活动     | 提交一份自我介绍。                           | 
+| 2        | 实践项目     | 创建并提交一个项目。                     |
+
+任务详细参见 [task.md](./task.md)。
+
+Git 的内容相对简单，但也是最为常用的基础。加油！
+
 # Git 是什么
 Git 是一种开源的分布式版本控制系统，广泛应用于软件开发领域，尤其是在协同工作环境中。它为程序员提供了一套必备的工具，使得团队成员能够有效地管理和跟踪代码的历史变更。下面是 Git 的主要功能和作用的规范描述：
 
@@ -43,7 +61,6 @@ Git 基础：[Git 基础知识](https://aicarrier.feishu.cn/wiki/YAXRwLZxPi8Hy6k
 
    允许开发者查看代码变更的具体内容，了解谁在何时做了哪些修改，这对于代码审查和质量控制至关重要。
 
-
 - **实现机制**
 
 | 特性       | 描述                                                                                                             |
@@ -81,6 +98,7 @@ Git 基础：[Git 基础知识](https://aicarrier.feishu.cn/wiki/YAXRwLZxPi8Hy6k
 [**Gitee**](https://gitee.com/)：
 - 国内的代码托管平台，提供了代码托管、项目管理、协作开发等功能，对国内开发者来说，访问速度可能更快，也更符合国内的使用习惯。
 
+
 **Github 需要魔法，可以选择自行选择使用。**
 
 ## 3. 常用 Git 操作
@@ -102,7 +120,6 @@ Git 基础：[Git 基础知识](https://aicarrier.feishu.cn/wiki/YAXRwLZxPi8Hy6k
 | `git push`               | 更新远程引用和相关的对象                                     |
 | `git remote`             | 管理跟踪远程仓库的命令                                       |
 | `git fetch`              | 从远程仓库获取数据到本地仓库，但不自动合并                   |
-
 
 **进阶指令**
 
@@ -182,12 +199,12 @@ Git 基础：[Git 基础知识](https://aicarrier.feishu.cn/wiki/YAXRwLZxPi8Hy6k
 帮助团队成员有效地管理和同步代码，避免工作冲突，确保项目的顺利进行。正确地使用这些命令可以极大地提高开发效率和协作质量。
 
 ## 5. 常用插件
+
 - **[GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens)**: 在代码行上显示 Git 提交信息。
 - **[Git Graph](https://marketplace.visualstudio.com/items?itemName=mhutchie.git-graph)**: 类似于 SourceTree 的可视化版本控制插件。
 - **[Git History](https://marketplace.visualstudio.com/items?itemName=donjayamanne.githistory)**: Git 日志查看器。
 
 仅演示常规使用，其他优点，大家可以自行挖掘。
-
 * GitLens：
 ![GitLens](https://github.com/InternLM/Tutorial/assets/160732778/199f4668-e959-42b6-b4fa-cdc2f0864fcd)
 
@@ -238,4 +255,66 @@ git checkout -b camp3_577 # 自定义一个新的分支
 
 ![I7ZsbQ0MMos1HMxufdaciHV4nMd](https://github.com/InternLM/Tutorial/assets/160732778/30e2b3b9-6091-4c04-90eb-5157691bae59)
 
+示例文件路径
 
+```bash
+./data/Git/task/camp3_id.md
+```
+* **创建自己的破冰文件**
+
+```bash
+touch ./data/Git/task/camp3_557.md # 修改为自己的问卷ID
+```
+
+![BwGgbkHdLo1jzvxIMxTc0futnub](https://github.com/InternLM/Tutorial/assets/160732778/cbf78959-ed0b-4426-91af-dca75b9fc013)
+
+* **提交更改到分支**
+
+```bash
+git add .
+git commit -m "add git_557_introduction" # 提交信息记录
+```
+
+![E7pybrN2sowPTFxThvmcxHKOnab](https://github.com/InternLM/Tutorial/assets/160732778/898de54d-b8ce-4666-948e-a142ac12aaa4)
+
+```perl
+git push origin camp3_577
+```
+
+（大家提交使用英文，避免仓库同步错误）
+
+注：初始化时可能需要创建对应的 token：（示例，可根据实际提示完成）
+
+![MKjsbwN3XoVjSGxsWZnc6x4hnCe](https://github.com/InternLM/Tutorial/assets/160732778/bea9600a-21f0-4cbc-8c7f-73fe5769e78b)
+
+![G3hmb6UmzomjJ7xOGZEc4GV0nNb](https://github.com/InternLM/Tutorial/assets/160732778/fae00c0f-6084-44d9-acf7-82fa915c90f9)
+
+![DxoLbxK01ovG88xUHehcnRgXnzT](https://github.com/InternLM/Tutorial/assets/160732778/c8f83c61-2973-4c8a-a9ae-6df3936a67ef)
+
+查看提交
+
+![RaosbM8E7osYsqx8jnIcGkm1n5c](https://github.com/InternLM/Tutorial/assets/160732778/d8a322ec-9a06-4463-a61d-831ef953b1ef)
+
+在 github 页面将修改的内容 PR 到 Tutorial
+
+![TT2NbszJ1oKCorxMWpXcakPUnCd](https://github.com/InternLM/Tutorial/assets/160732778/bef3eac1-e5dc-4699-b8c6-e73066b68fda)
+
+按要求编写 title
+
+```bash
+git_557_introduction # 请统一 git_<id>_introduction 格式,方便审核
+```
+
+下面可以查看修改的内容
+
+![ZVVOb8NtEowWFQxWFQAcgcoWnQf](https://github.com/InternLM/Tutorial/assets/160732778/6bbc3734-ea3a-46f4-a468-d317ed23227f)
+
+PR 示例链接：[https://github.com/InternLM/Tutorial/pull/790](https://github.com/InternLM/Tutorial/pull/790)
+
+也可以合并到自己的仓库
+
+![LBZibAcS0oArsFxzCLNcY1X2n7e](https://github.com/InternLM/Tutorial/assets/160732778/13a578cf-13be-45a2-81de-4cfab5109770)
+
+自己的仓库，可以自行 merge，作业提交到 Tutorial 需要维护者审核。
+
+![UEl6btxJWo0OHRxcUjRcb9udnNe](https://github.com/InternLM/Tutorial/assets/160732778/72966a46-c634-48a9-9a88-fc6834d957e2)
