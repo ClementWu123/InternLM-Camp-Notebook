@@ -438,10 +438,10 @@ python run.py configs/eval_subjective_custom.py -r
                                             gpt4o/internlm2-chat-1.8b-turbomind 
 ----------------------------------------  ------------------------------------- 
 language/compass_bench_language_en_val                                    -6.67    
-instruct/compass_bench_instruct_en_val                                    12.5     
-reasoning/compass_bench_reasoning_en_val                                 -12.5      
-coding/compass_bench_coding_en_val                                        -2.5   
-language/compass_bench_language_cn_val                                    34    
+instruct/compass_bench_instruct_en_val                                     12.5     
+reasoning/compass_bench_reasoning_en_val                                  -12.5      
+coding/compass_bench_coding_en_val                                         -2.5   
+language/compass_bench_language_cn_val                                       34    
 instruct/compass_bench_instruct_cn_val                                   -45.83    
 reasoning/compass_bench_reasoning_cn_val                                   1.19    
 coding/compass_bench_coding_cn_val                                        56.67
