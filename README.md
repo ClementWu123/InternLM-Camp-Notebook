@@ -18,7 +18,7 @@ GitHub仓库 [https://github.com/InternLM/Tutorial](https://github.com/InternLM/
 
 |关卡名称|资料|
 |:-----|:----|
-|第 1 关| [书生大模型全链路开源体系] |
+|第 1 关| [书生大模型全链路开源体系 (InternLM Ecosystem)] |
 |第 2 关| [8G 显存玩转书生大模型 Demo (InternLM2 Demo)](L1/Demo/) |
 |第 3 关| [浦语提示词工程实践 (Prompt  Engineering)](L1/Prompt/) |
 |第 4 关| [InternLM + LlamaIndex RAG 实践 (LlamaIndex RAG)](L1/LlamaIndex/)|
