@@ -432,6 +432,27 @@ python run.py configs/eval_subjective_custom.py -r
 
 <img src="start_sub.png" alt="Resized Image 1" width="800"/>
 
+我们得到以下结果
+
+```code
+                                            gpt4o/internlm2-chat-1.8b-turbomind 
+----------------------------------------  ------------------------------------- 
+language/compass_bench_language_en_val                                    -6.67    
+instruct/compass_bench_instruct_en_val                                    12.5     
+reasoning/compass_bench_reasoning_en_val                                 -12.5      
+coding/compass_bench_coding_en_val                                        -2.5   
+language/compass_bench_language_cn_val                                    34    
+instruct/compass_bench_instruct_cn_val                                   -45.83    
+reasoning/compass_bench_reasoning_cn_val                                   1.19    
+coding/compass_bench_coding_cn_val                                        56.67
+```
+
+发现internlm2_5-1_8b-chat比internlm2-chat-1_8b在中文理解上有所增强，尤其是对编程的理解，但英文理解方面有所下降。
+
+## 评测 InternLM2-Chat-1.8B 模型使用 LMDeploy部署后在 ceval 数据集上的性能
+
+
+
 ## 使用OpenCompass进行调用API评测
 
 我们可以调用阿里巴巴的Qwen Max大模型api进行测试。我们先安装调用千问模型api的包：
