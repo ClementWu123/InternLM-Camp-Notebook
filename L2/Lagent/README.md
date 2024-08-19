@@ -48,4 +48,15 @@ git clone https://github.com/InternLM/lagent.git
 cd lagent && git checkout 81e7ace && pip install -e . && cd ..
 ```
 
+## Lagent Web Demo 使用
+
+接下来，我们将使用 Lagent 的 Web Demo 来体验 InternLM2.5-7B-Chat 的智能体能力。
+
+首先，我们先使用 LMDeploy 部署 InternLM2.5-7B-Chat，并启动一个 API Server。
+
+```bash
+conda activate agent_camp3
+lmdeploy serve api_server /share/new_models/Shanghai_AI_Laboratory/internlm2_5-7b-chat --model-name internlm2_5-7b-chat
+```
+
 
