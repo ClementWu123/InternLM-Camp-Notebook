@@ -1,5 +1,3 @@
-## Lagent自定义你的Agent智能体
-
 # Lagent 自定义你的 Agent 智能体
 
 ## Lagent 介绍
