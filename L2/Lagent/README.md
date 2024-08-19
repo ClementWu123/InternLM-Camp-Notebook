@@ -77,10 +77,120 @@ streamlit run examples/internlm2_agent_web_demo.py
 ssh -CNg -L 8501:127.0.0.1:8501 -L 23333:127.0.0.1:23333 root@ssh.intern-ai.org.cn -p <你的 SSH 端口号>
 ```
 
-| LMDeploy api_server | Lagent Web Demo | 
-| --- | --- |
-| ![LMDeploy done](https://github.com/user-attachments/assets/820f4ceb-4337-484f-997b-001d5532816a) | ![Lagent done](https://github.com/user-attachments/assets/b9ccff2b-6e05-4c4e-b85b-860f8b9e2f41) |
-
 接下来，在本地浏览器中打开 `localhost:8501`，并修改**模型名称**一栏为 `internlm2_5-7b-chat`，修改**模型 ip**一栏为`127.0.0.1:23333`。
+
+<img src="webdemo.png" alt="Resized Image 1" width="800"/>
+
+然后，我们在插件选择一栏选择 `ArxivSearch`，并输入指令“帮我搜索一下 MindSearch 论文”。
+
+<img src="papers.png" alt="Resized Image 1" width="800"/>
+
+## 基于 Lagent 自定义智能体
+
+在本节中，我们将带大家基于 Lagent 自定义自己的智能体。
+
+Lagent 中关于工具部分的介绍文档位于 https://lagent.readthedocs.io/zh-cn/latest/tutorials/action.html 。
+
+使用 Lagent 自定义工具主要分为以下几步：
+
+1. 继承 `BaseAction` 类
+2. 实现简单工具的 `run` 方法；或者实现工具包内每个子工具的功能
+3. 简单工具的 `run` 方法可选被 `tool_api` 装饰；工具包内每个子工具的功能都需要被 `tool_api` 装饰
+
+下面我们将实现一个调用 MagicMaker API 以完成文生图的功能。
+
+首先，我们先来创建工具文件：
+
+```bash
+cd /root/agent_camp3/lagent
+touch lagent/actions/magicmaker.py
+```
+
+然后，我们将下面的代码复制进入 `/root/agent_camp3/lagent/lagent/actions/magicmaker.py`, 并且修改风格为写实画风。
+
+```python
+import json
+import requests
+
+from lagent.actions.base_action import BaseAction, tool_api
+from lagent.actions.parser import BaseParser, JsonParser
+from lagent.schema import ActionReturn, ActionStatusCode
+
+
+class MagicMaker(BaseAction):
+    styles_option = [
+        'dongman',  # 动漫
+        'guofeng',  # 国风
+        'xieshi',   # 写实
+        'youhua',   # 油画
+        'manghe',   # 盲盒
+    ]
+    aspect_ratio_options = [
+        '16:9', '4:3', '3:2', '1:1',
+        '2:3', '3:4', '9:16'
+    ]
+
+    def __init__(self,
+                 style='xieshi',
+                 aspect_ratio='4:3'):
+        super().__init__()
+        if style in self.styles_option:
+            self.style = style
+        else:
+            raise ValueError(f'The style must be one of {self.styles_option}')
+        
+        if aspect_ratio in self.aspect_ratio_options:
+            self.aspect_ratio = aspect_ratio
+        else:
+            raise ValueError(f'The aspect ratio must be one of {aspect_ratio}')
+    
+    @tool_api
+    def generate_image(self, keywords: str) -> dict:
+        """Run magicmaker and get the generated image according to the keywords.
+
+        Args:
+            keywords (:class:`str`): the keywords to generate image
+
+        Returns:
+            :class:`dict`: the generated image
+                * image (str): path to the generated image
+        """
+        try:
+            response = requests.post(
+                url='https://magicmaker.openxlab.org.cn/gw/edit-anything/api/v1/bff/sd/generate',
+                data=json.dumps({
+                    "official": True,
+                    "prompt": keywords,
+                    "style": self.style,
+                    "poseT": False,
+                    "aspectRatio": self.aspect_ratio
+                }),
+                headers={'content-type': 'application/json'}
+            )
+        except Exception as exc:
+            return ActionReturn(
+                errmsg=f'MagicMaker exception: {exc}',
+                state=ActionStatusCode.HTTP_ERROR)
+        image_url = response.json()['data']['imgUrl']
+        return {'image': image_url}
+
+```
+
+最后，我们修改 `/root/agent_camp3/lagent/examples/internlm2_agent_web_demo.py` 来适配我们的自定义工具。
+
+1. 在 `from lagent.actions import ActionExecutor, ArxivSearch, IPythonInterpreter` 的下一行添加 `from lagent.actions.magicmaker import MagicMaker`
+2. 在第27行添加 `MagicMaker()`。
+
+<img src="magicmaker.png" alt="Resized Image 1" width="800"/>
+
+重新启动webdemo, 我们可以看到新的插件可以被调用。
+
+<img src="plugin.png" alt="Resized Image 1" width="800"/>
+
+输入“请帮我生成一幅城市画”, 我们得到以下图片。
+
+<img src="city.png" alt="Resized Image 1" width="800"/>
+
+
 
 
