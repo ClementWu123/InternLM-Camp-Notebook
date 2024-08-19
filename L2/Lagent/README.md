@@ -71,6 +71,16 @@ streamlit run examples/internlm2_agent_web_demo.py
 
 <img src="streamlit.png" alt="Resized Image 1" width="800"/>
 
+在等待两个 server 都完全启动（如下图所示）后，我们在 **本地** 的 PowerShell 中输入如下指令来进行端口映射：
 
+```bash
+ssh -CNg -L 8501:127.0.0.1:8501 -L 23333:127.0.0.1:23333 root@ssh.intern-ai.org.cn -p <你的 SSH 端口号>
+```
+
+| LMDeploy api_server | Lagent Web Demo | 
+| --- | --- |
+| ![LMDeploy done](https://github.com/user-attachments/assets/820f4ceb-4337-484f-997b-001d5532816a) | ![Lagent done](https://github.com/user-attachments/assets/b9ccff2b-6e05-4c4e-b85b-860f8b9e2f41) |
+
+接下来，在本地浏览器中打开 `localhost:8501`，并修改**模型名称**一栏为 `internlm2_5-7b-chat`，修改**模型 ip**一栏为`127.0.0.1:23333`。
 
 
