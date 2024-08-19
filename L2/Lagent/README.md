@@ -59,7 +59,7 @@ conda activate agent_camp3
 lmdeploy serve api_server /share/new_models/Shanghai_AI_Laboratory/internlm2_5-7b-chat --model-name internlm2_5-7b-chat
 ```
 
-
+<img src="lmdepoly.png" alt="Resized Image 1" width="800"/>
 
 然后，我们在另一个窗口中启动 Lagent 的 Web Demo。
 
@@ -68,5 +68,9 @@ cd /root/agent_camp3/lagent
 conda activate agent_camp3
 streamlit run examples/internlm2_agent_web_demo.py
 ```
+
+<img src="streamlit.png" alt="Resized Image 1" width="800"/>
+
+
 
 
