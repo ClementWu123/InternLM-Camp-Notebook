@@ -75,6 +75,33 @@ lmdeploy lite auto_awq \
 6. `--w-bits 4`: 这表示权重（weights）的位数将被量化为4位。
 7. `--work-dir /root/models/internlm2_5-7b-chat-w4a16-4bit`: 这是工作目录的路径，用于存储量化后的模型和中间结果。
 
+## kv cache int4/int8 量化
+
+kv cache是一种缓存技术，通过存储键值对的形式来复用计算结果，以达到提高性能和降低内存消耗的目的。在大规模训练和推理中，kv cache可以显著减少重复计算量，从而提升模型的推理速度。理想情况下，kv cache全部存储于显存，以加快访存速度。
+
+模型在运行时，占用的显存可大致分为三部分：模型参数本身占用的显存、kv cache占用的显存，以及中间运算结果占用的显存。LMDeploy的kv cache管理器可以通过设置`--cache-max-entry-count`参数，控制kv缓存占用**剩余显存**的最大比例。默认的比例为0.8。
+
+自 v0.4.0 起，LMDeploy 支持在线 kv cache int4/int8 量化，量化方式为 per-head per-token 的非对称量化。此外，通过 LMDeploy 应用 kv 量化非常简单，只需要设定 `quant_policy` 和`cache-max-entry-count`参数。目前，LMDeploy 规定 `qant_policy=4` 表示 kv int4 量化，`quant_policy=8` 表示 kv int8 量化。
+
+### W4A16 量化+ KV cache+KV cache 量化
+
+输入以下指令，让我们同时启用量化后的模型、设定kv cache占用和kv cache int4量化。
+
+```Python
+lmdeploy serve api_server \
+    /root/models/internlm2_5-7b-chat-w4a16-4bit/ \
+    --model-format awq \
+    --quant-policy 4 \
+    --cache-max-entry-count 0.4\
+    --server-name 0.0.0.0 \
+    --server-port 23333 \
+    --tp 1
+```
+
 <img src="quant.png" alt="Resized Image 1" width="800"/>
+
+我们看到显存占用。
+
+<img src="usage.png" alt="Resized Image 1" width="800"/>
 
 
