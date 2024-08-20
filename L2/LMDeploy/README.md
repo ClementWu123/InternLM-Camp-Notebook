@@ -311,7 +311,7 @@ python /root/internlm2_5_func.py
 
 <img src="answer2.png" alt="Resized Image 1" width="800"/>
 
-我们看到原模型占用明显
+我们看到原模型占用明显增多。
 
 <img src="usage2.png" alt="Resized Image 1" width="800"/>
 
