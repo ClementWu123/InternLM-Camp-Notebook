@@ -284,7 +284,7 @@ messages.append({
 })
 messages.append({
     'role': 'environment',
-    'content': f'3+5={func1_out}',
+    'content': f'12+15={func1_out}',
     'name': 'plugin'
 })
 response = client.chat.completions.create(
@@ -301,6 +301,19 @@ func2_out = eval(f'{func2_name}(**{func2_args})')
 print(func2_out)
 ```
 
+现在让我们输入以下指令运行python代码。
+
+```Python
+python /root/internlm2_5_func.py
+```
+
+得到一下结果。
+
+<img src="answer2.png" alt="Resized Image 1" width="800"/>
+
+我们看到原模型占用明显
+
+<img src="usage2.png" alt="Resized Image 1" width="800"/>
 
 
 
