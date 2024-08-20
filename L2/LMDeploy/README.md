@@ -100,8 +100,210 @@ lmdeploy serve api_server \
 
 <img src="quant.png" alt="Resized Image 1" width="800"/>
 
-我们看到显存占用。
+我们看到显存占用, 支持30% A100运行。
 
 <img src="usage.png" alt="Resized Image 1" width="800"/>
+
+## API开发
+
+与之前一样，让我们进入创建好的conda环境并输入指令启动API服务器。
+
+```Plain
+conda activate lmdeploy
+lmdeploy serve api_server \
+    /root/models/internlm2_5-7b-chat-w4a16-4bit \
+    --model-format awq \
+    --cache-max-entry-count 0.4 \
+    --quant-policy 4 \
+    --server-name 0.0.0.0 \
+    --server-port 23333 \
+    --tp 1
+```
+
+在新建终端中输入如下指令，新建`internlm2_5.py`。
+
+```Plain
+touch /root/internlm2_5.py
+```
+
+
+将以下内容复制粘贴进`internlm2_5.py`。我们让模型介绍一下啊唐三彩。
+
+```Python
+# 导入openai模块中的OpenAI类，这个类用于与OpenAI API进行交互
+from openai import OpenAI
+import openai
+
+openai.api_key = "abc"
+
+# 创建一个OpenAI的客户端实例，需要传入API密钥和API的基础URL
+client = OpenAI(
+    api_key=openai.api_key,  
+    # 替换为你的OpenAI API密钥，由于我们使用的本地API，无需密钥，任意填写即可
+    base_url="http://0.0.0.0:23333/v1"  
+    # 指定API的基础URL，这里使用了本地地址和端口
+)
+
+# 调用client.models.list()方法获取所有可用的模型，并选择第一个模型的ID
+# models.list()返回一个模型列表，每个模型都有一个id属性
+model_name = client.models.list().data[0].id
+
+# 使用client.chat.completions.create()方法创建一个聊天补全请求
+# 这个方法需要传入多个参数来指定请求的细节
+response = client.chat.completions.create(
+  model=model_name,  
+  # 指定要使用的模型ID
+  messages=[  
+  # 定义消息列表，列表中的每个字典代表一个消息
+    {"role": "system", "content": "你是一个友好的小助手，负责解决问题."},  
+    # 系统消息，定义助手的行为
+    {"role": "user", "content": "请介绍一下唐三彩"},  
+    # 用户消息，询问时间管理的建议
+  ],
+    temperature=0.8,  
+    # 控制生成文本的随机性，值越高生成的文本越随机
+    top_p=0.8  
+    # 控制生成文本的多样性，值越高生成的文本越多样
+)
+
+# 打印出API的响应结果
+print(response.choices[0].message.content)
+```
+
+现在让我们在新建终端输入以下指令激活环境并运行python代码。
+
+```Python
+conda activate lmdeploy
+python /root/internlm2_5.py
+```
+
+我们得到一下结果。
+
+<img src="answer1.png" alt="Resized Image 1" width="800"/>
+
+## 4.2 Function call
+
+关于Function call，即函数调用功能，它允许开发者在调用模型时，详细说明函数的作用，并使模型能够智能地根据用户的提问来输入参数并执行函数。完成调用后，模型会将函数的输出结果作为回答用户问题的依据。
+
+首先让我们进入创建好的conda环境并启动API服务器。
+
+```Plain
+conda activate lmdeploy
+lmdeploy serve api_server \
+    /root/models/internlm2_5-7b-chat \
+    --model-format hf \
+    --quant-policy 0 \
+    --server-name 0.0.0.0 \
+    --server-port 23333 \
+    --tp 1
+```
+
+目前LMDeploy在0.5.3版本中支持了对InternLM2, InternLM2.5和llama3.1这三个模型，故我们选用InternLM2.5 封装API。
+
+让我们使用一个简单的例子作为演示。输入如下指令，新建`internlm2_5_func.py`。
+
+```Plain
+touch /root/internlm2_5_func.py
+```
+
+双击打开，并将以下内容复制粘贴进`internlm2_5_func.py`。
+
+```Python
+from openai import OpenAI
+
+
+def add(a: int, b: int):
+    return a + b
+
+
+def mul(a: int, b: int):
+    return a * b
+
+
+tools = [{
+    'type': 'function',
+    'function': {
+        'name': 'add',
+        'description': 'Compute the sum of two numbers',
+        'parameters': {
+            'type': 'object',
+            'properties': {
+                'a': {
+                    'type': 'int',
+                    'description': 'A number',
+                },
+                'b': {
+                    'type': 'int',
+                    'description': 'A number',
+                },
+            },
+            'required': ['a', 'b'],
+        },
+    }
+}, {
+    'type': 'function',
+    'function': {
+        'name': 'mul',
+        'description': 'Calculate the product of two numbers',
+        'parameters': {
+            'type': 'object',
+            'properties': {
+                'a': {
+                    'type': 'int',
+                    'description': 'A number',
+                },
+                'b': {
+                    'type': 'int',
+                    'description': 'A number',
+                },
+            },
+            'required': ['a', 'b'],
+        },
+    }
+}]
+messages = [{'role': 'user', 'content': 'Compute (12+15)*4'}]
+
+client = OpenAI(api_key='YOUR_API_KEY', base_url='http://0.0.0.0:23333/v1')
+model_name = client.models.list().data[0].id
+response = client.chat.completions.create(
+    model=model_name,
+    messages=messages,
+    temperature=0.8,
+    top_p=0.8,
+    stream=False,
+    tools=tools)
+print(response)
+func1_name = response.choices[0].message.tool_calls[0].function.name
+func1_args = response.choices[0].message.tool_calls[0].function.arguments
+func1_out = eval(f'{func1_name}(**{func1_args})')
+print(func1_out)
+
+messages.append({
+    'role': 'assistant',
+    'content': response.choices[0].message.content
+})
+messages.append({
+    'role': 'environment',
+    'content': f'3+5={func1_out}',
+    'name': 'plugin'
+})
+response = client.chat.completions.create(
+    model=model_name,
+    messages=messages,
+    temperature=0.8,
+    top_p=0.8,
+    stream=False,
+    tools=tools)
+print(response)
+func2_name = response.choices[0].message.tool_calls[0].function.name
+func2_args = response.choices[0].message.tool_calls[0].function.arguments
+func2_out = eval(f'{func2_name}(**{func2_args})')
+print(func2_out)
+```
+
+
+
+
+
 
 
