@@ -75,4 +75,6 @@ lmdeploy lite auto_awq \
 6. `--w-bits 4`: 这表示权重（weights）的位数将被量化为4位。
 7. `--work-dir /root/models/internlm2_5-7b-chat-w4a16-4bit`: 这是工作目录的路径，用于存储量化后的模型和中间结果。
 
+<img src="quant.png" alt="Resized Image 1" width="800"/>
+
 
