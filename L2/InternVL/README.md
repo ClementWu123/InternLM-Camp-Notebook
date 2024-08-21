@@ -122,6 +122,47 @@ cp InternLM/datasets/CLoT_cn_2000/ex_images/007aPnLRgy1hb39z0im50j30ci0el0wm.jpg
 ```
 
 ![image](https://github.com/user-attachments/assets/0c2fec15-3cd3-4eb2-8f98-5b5fb645b0f1)
-哈哈，是两只猫在掐架。那我给到的冷笑话回复是什么呢？
+
+哈哈，是两只猫在掐架。
+
+### InternVL 推理部署攻略
+我们用LMDeploy来推理这张图片～看看它能不能成功解释出梗图呢？
+
+#### 使用pipeline进行推理
+
+之后我们使用lmdeploy自带的pipeline工具进行开箱即用的推理流程，首先我们新建一个文件。
+
+```bash
+touch /root/InternLM/code/test_lmdeploy.py
+cd /root/InternLM/code/
+```
+
+然后把以下代码拷贝进test_lmdeploy.py中。
+
+```python
+from lmdeploy import pipeline
+from lmdeploy.vl import load_image
+
+pipe = pipeline('/root/model/InternVL2-2B')
+
+image = load_image('/root/InternLM/007aPnLRgy1hb39z0im50j30ci0el0wm.jpg')
+response = pipe(('请你根据这张图片，讲一个脑洞大开的梗', image))
+print(response.text)
+```
+
+运行执行推理结果。
+
+```bash
+python3 test_lmdeploy.py
+```
+
+#### 推理后
+
+> 推理出来有什么文字是纯随机的，并不一定和展示结果完全一致哦～
+
+推理后我们发现直接使用2b模型不能很好的讲出梗，现在我们要对这个2b模型进行微调。
+
+
+
 
 
