@@ -229,8 +229,16 @@ python3 -m huixiangdou.gradio
 
 <div align="center">
 
-![](<https://raw.githubusercontent.com/fzd9752/pic_img/main/imgs/Screenshot 2024-08-24 at 17.09.58.png>)
+![](base.png)
 
 </div>
 
 现在就可以用页面测试一下茴香豆的交互效果了。
+
+我们提出关于库里模组的两个问题，模型调用茴香豆完成准确回答：
+
+<div align="center">
+
+![](a.png)
+![](b.png)
+</div>
